@@ -76,27 +76,44 @@ class Resolver {
     }
 
     reveal() {
-        if(!this.queue) {
-            this.queue = [];
+        if(!this.stack) {
+            this.stack = [];
             for(let contestant of this.contestants) {
-                this.queue.push(contestant);
+                this.stack.push(contestant);
             }
         }
-        if(this.queue.length == 0) {
-            alert('WINNER');
-            return 0;
-        }
-        if(!this.last) {
-            this.last = this.queue[this.queue.length - 1];
-            this.last.select();
-        } else {
-            if(!this.last.reveal()) {
+
+        if(this.stack.length > 0) {
+            if(this.reviewing) {
+                this.last.reveal();
+                this.reviewing = false;
+                this.contestants.sort((a, b) => a.compareTo(b));
+                for(let contestant of this.contestants) {
+                    this.element.removeChild(contestant.htmlElement);
+                }
+                for(let contestant of this.contestants) {
+                    contestant.htmlElement = this.element.appendChild(contestant.htmlElement);
+                }
+                return;
+            }
+            if(this.last) {
                 this.last.deselect();
-                this.last = null;
-                this.queue.pop();
-            } else {
-                this.queue.sort((a, b) => a.compareTo(b));
             }
+            let contestant = this.stack.pop();
+            contestant.select();
+            
+            // insert contestant in order
+            if(contestant.reveal()) {
+                this.reviewing = true;
+                let i = 0;
+                
+                while(i < this.stack.length && this.stack[i].compareTo(contestant) < 0) {
+                    i++;
+                }
+
+                this.stack.splice(i, 0, contestant);
+            }
+            this.last = contestant;
         }
     }
 

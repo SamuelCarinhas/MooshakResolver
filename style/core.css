@@ -1,5 +1,6 @@
 body {
-    margin: 0;
+    background-color: #FFFFCC;
+    margin: 20px;
     padding: 0;
 }
 
@@ -11,9 +12,25 @@ table {
 
 
 td, th {
-    border: 1px solid #dddddd;
+    border: 1px solid lightgray;
     text-align: left;
     padding: 8px;
+}
+
+tr:nth-child(even) {
+    background-color: lightgray;
+}
+
+tr:nth-child(odd) {
+    background-color: white;
+}
+
+tr.problems {
+    background-color: gray;
+}
+
+th.problem {
+    text-align: center;
 }
 
 td {
@@ -22,7 +39,7 @@ td {
 }
 
 td.not-submitted {
-    background-color: #ddd;
+    background-color: lightgray;
     text-align: center;
     font-weight: bold;
 }
@@ -42,18 +59,14 @@ td.wrong {
 }
 
 td.pending {
-    background-color: #fcba03;
+    background-color: #AAAAFF;
     text-align: center;
     color: white;
     font-weight: bold;
 }
 
-tr:nth-child(even) {
-    background-color: #dddddd;
-}
-
 tr.selected {
-    background-color: #f0e381;
+    background-color: #CC9999;
 }
 
 .revealing {
@@ -62,7 +75,7 @@ tr.selected {
   
 @keyframes scaling {
     0% {
-        background-color: #fcba03;
+        background-color: #AAAAFF;
     }
     33% {
         background-color: #028a00;

@@ -69,6 +69,11 @@ class Contestant {
             data.innerHTML = '✗';
         } else {
             data.classList.add('correct');
+            this.allScore += score;
+            this.problemsSolved++;
+            this.problemsSolved + '/' + this.problems.length;
+            this.htmlScoreData.innerHTML = new Date(this.allScore * 1000).toISOString().substr(11, 8);
+            this.htmlProblemData.innerHTML = this.problemsSolved + '/' + this.problems.length;
             data.innerHTML = '✓';
         }
     }
@@ -99,12 +104,12 @@ class Contestant {
         let problemsData = document.createElement('td');
         problemsData.classList.add('problemData');
         problemsData.innerHTML = this.problemsSolved + '/' + this.problems.length;
-        row.appendChild(problemsData);
+        this.htmlProblemData = row.appendChild(problemsData);
 
         let scoreData = document.createElement('td');
         scoreData.classList.add('scoreData');
         scoreData.innerHTML = new Date(this.allScore * 1000).toISOString().substr(11, 8);
-        row.appendChild(scoreData);
+        this.htmlScoreData = row.appendChild(scoreData);
 
         for(let i = 0; i < this.problems.length; i++) {
             let data = document.createElement('td');
