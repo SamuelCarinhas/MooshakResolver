@@ -7,4 +7,4 @@ After your contest is over, download your contest's zip from Mooshak, and save t
 After this, you only need to run a webserver with the current files.
 
 # Preview
-![alt text](./snapshots/alpha.PNG)
+![alt text](./snapshots/beta.PNG)
