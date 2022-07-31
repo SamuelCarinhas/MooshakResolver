@@ -488,7 +488,7 @@
                Minimum_interval=""
                Maximum_pending="">
           <Submission xml:id="submissions.07667512_C_Pedro"
-                    Date="1659027952"
+                    Date="1659260171"
                     Time="7667512"
                     Problem="C"
                     Team="Pedro"
@@ -506,7 +506,7 @@
                     Memory="276"
                     Feedback="{10 tests with &lt;b&gt;Accepted&lt;/b&gt;}"/>
           <Submission xml:id="submissions.07640382_B_SamuelCarinhas"
-                    Date="1659000822"
+                    Date="1659260171"
                     Time="7640382"
                     Problem="B"
                     Team="SamuelCarinhas"
@@ -542,7 +542,7 @@
                     Memory="3064"
                     Feedback="{15 testes com &lt;b&gt;Aceite&lt;/b&gt;}"/>
           <Submission xml:id="submissions.07649300_C_SamuelCarinhas"
-                    Date="1659009740"
+                    Date="1659260171"
                     Time="7649300"
                     Problem="C"
                     Team="SamuelCarinhas"

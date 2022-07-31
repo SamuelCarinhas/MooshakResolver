@@ -61,21 +61,54 @@ class Resolver {
     addElements() {
         for(let problem of this.problemSet) {
             let problems = this.element.getElementsByClassName('problems')[0];
-            problems.appendChild(problem.getElement());
+            problem.htmlElement = problems.appendChild(problem.getElement());
         }
 
         for(let contestant of this.contestants) {
-            this.element.appendChild(contestant.getElement());
+            contestant.htmlElement = this.element.appendChild(contestant.getElement());
+        }
+    }
+
+    bindActions() {
+        new KeyPressListener('Space', () => {
+            this.reveal();
+        });
+    }
+
+    reveal() {
+        if(!this.queue) {
+            this.queue = [];
+            for(let contestant of this.contestants) {
+                this.queue.push(contestant);
+            }
+        }
+        if(this.queue.length == 0) {
+            alert('WINNER');
+            return 0;
+        }
+        if(!this.last) {
+            this.last = this.queue[this.queue.length - 1];
+            this.last.select();
+        } else {
+            if(!this.last.reveal()) {
+                this.last.deselect();
+                this.last = null;
+                this.queue.pop();
+            } else {
+                this.queue.sort((a, b) => a.compareTo(b));
+            }
         }
     }
 
     init() {
         console.log('Resolver started');
 
+        
         fetch(this.content)
             .then(response => response.text())
             .then(text => {
                 this.setup(text);
+                this.bindActions();
             });
     }
 

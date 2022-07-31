@@ -16,6 +16,11 @@ td, th {
     padding: 8px;
 }
 
+td {
+    height: 25px;
+    width: 15px;
+}
+
 td.not-submitted {
     background-color: #ddd;
     text-align: center;
@@ -45,4 +50,24 @@ td.pending {
 
 tr:nth-child(even) {
     background-color: #dddddd;
+}
+
+tr.selected {
+    background-color: #f0e381;
+}
+
+.revealing {
+    animation: scaling 2s infinite alternate;
+}
+  
+@keyframes scaling {
+    0% {
+        background-color: #fcba03;
+    }
+    33% {
+        background-color: #028a00;
+    }
+    66% {
+        background-color: #a80014;
+    }
 }

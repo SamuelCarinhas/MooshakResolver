@@ -6,8 +6,10 @@ class Contestant {
         this.problems = problems;
         this.score = [];
         this.pending = [];
+        this.htmlSubmissions = [];
         this.problemsSolved = 0;
         this.allScore = 0;
+        this.pendingCount = 0;
         for(let _ of problems) {
             this.score.push(-2);
             this.pending.push(false);
@@ -25,12 +27,69 @@ class Contestant {
         if(!submission.pending && submission.accepted) {
             this.problemsSolved++;
             this.allScore += submission.score;
+        } else {
+            this.pendingCount++;
         }
+    }
+
+    reveal() {
+        if(this.pendingCount == 0) {
+            return false;
+        } else {
+            for(let i = 0; i < this.pending.length; i++) {
+                if(this.pending[i]) {
+                    if(this.subRevealing) {
+                        this.pendingCount--;
+                        this.pending[i] = false;
+                        this.subRevealing = false;
+                        this.htmlSubmissions[i].classList.remove('revealing');
+                        this.htmlSubmissions[i].classList.remove('pending');
+                        this.evaluate(this.htmlSubmissions[i], i);
+                    } else {
+                        this.subRevealing = true;
+                        this.htmlSubmissions[i].classList.add('revealing');
+                    }
+                    break;
+                }
+            }
+        }
+        return true;
+    }
+
+    evaluate(data, i) {
+        let score = this.score[i];
+        if(this.pending[i]) {
+            data.classList.add('pending');
+            data.innerHTML = '?';
+        } else if(score == -2) {
+            data.classList.add('not-submitted');
+            data.innerHTML = '-';
+        } else if(score == -1) {
+            data.classList.add('wrong');
+            data.innerHTML = '✗';
+        } else {
+            data.classList.add('correct');
+            data.innerHTML = '✓';
+        }
+    }
+
+    select() {
+        this.selected = true;
+        this.htmlElement.classList.add('selected');
+        this.htmlElement.scrollIntoView();
+    }
+
+    deselect() {
+        this.selected = false;
+        this.htmlElement.classList.remove('selected');
     }
 
     getElement() {
         let row = document.createElement('tr');
         row.classList.add('contestant');
+
+        if(this.selected)
+            row.classList.add('selected');
         
         let data = document.createElement('td');
         data.classList.add('name');
@@ -49,23 +108,10 @@ class Contestant {
 
         for(let i = 0; i < this.problems.length; i++) {
             let data = document.createElement('td');
-            let score = this.score[i];
 
-            if(this.pending[i]) {
-                data.classList.add('pending');
-                data.innerHTML = '?';
-            } else if(score == -2) {
-                data.classList.add('not-submitted');
-                data.innerHTML = '-';
-            } else if(score == -1) {
-                data.classList.add('wrong');
-                data.innerHTML = '✗';
-            } else {
-                data.classList.add('correct');
-                data.innerHTML = '✓';
-            }
+            this.evaluate(data, i);
             
-            row.appendChild(data);
+            this.htmlSubmissions.push(row.appendChild(data));
         }
 
         return row;
