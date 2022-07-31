@@ -6,5 +6,7 @@ After your contest is over, download your contest's zip from Mooshak, and save t
 
 After this, you only need to run a webserver with the current files.
 
+In order to reveal the submissions, you should use the SPACE key.
+
 # Preview
 ![alt text](./snapshots/beta.PNG)

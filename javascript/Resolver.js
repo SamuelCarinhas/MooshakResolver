@@ -70,7 +70,7 @@ class Resolver {
     }
 
     bindActions() {
-        new KeyPressListener('Space', () => {
+        new KeyPressListener('Enter', () => {
             this.reveal();
         });
     }
@@ -85,6 +85,7 @@ class Resolver {
 
         if(this.stack.length > 0) {
             if(this.reviewing) {
+                console.log('a');
                 this.last.reveal();
                 this.reviewing = false;
                 this.contestants.sort((a, b) => a.compareTo(b));
@@ -94,6 +95,7 @@ class Resolver {
                 for(let contestant of this.contestants) {
                     contestant.htmlElement = this.element.appendChild(contestant.htmlElement);
                 }
+                this.last.select();
                 return;
             }
             if(this.last) {
@@ -101,8 +103,7 @@ class Resolver {
             }
             let contestant = this.stack.pop();
             contestant.select();
-            
-            // insert contestant in order
+    
             if(contestant.reveal()) {
                 this.reviewing = true;
                 let i = 0;

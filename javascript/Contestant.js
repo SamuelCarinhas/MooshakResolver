@@ -81,7 +81,10 @@ class Contestant {
     select() {
         this.selected = true;
         this.htmlElement.classList.add('selected');
-        this.htmlElement.scrollIntoView();
+        this.htmlElement.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center'
+        });
     }
 
     deselect() {
