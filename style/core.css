@@ -10,7 +10,6 @@ table {
     width: 100%;
 }
 
-
 td, th {
     border: 1px solid lightgray;
     text-align: left;
@@ -34,7 +33,7 @@ th.problem {
 }
 
 td {
-    height: 25px;
+    height: 80px;
     width: 15px;
 }
 
@@ -49,6 +48,11 @@ td.correct {
     text-align: center;
     color: white;
     font-weight: bold;
+    font-size: 11px;
+}
+
+td.pending p {
+    font-size: 16px;
 }
 
 td.wrong {
@@ -56,6 +60,11 @@ td.wrong {
     text-align: center;
     color: white;
     font-weight: bold;
+    font-size: 11px;
+}
+
+td.pending p {
+    font-size: 16px;
 }
 
 td.pending {
@@ -63,6 +72,11 @@ td.pending {
     text-align: center;
     color: white;
     font-weight: bold;
+    font-size: 11px;
+}
+
+td.pending p {
+    font-size: 16px;
 }
 
 tr.selected {

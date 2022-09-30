@@ -1,80 +1,98 @@
+let scoreUtils = {
+    noSubmission: -2,
+    wrong: -1
+}
+
 class Contestant {
 
-    constructor({config, group, problems}) {
+    constructor({config, group, problems, penalty}) {
+        this.id = config.getAttribute('xml:id');
         this.name = config.getAttribute('Name');
         this.group = group;
         this.problems = problems;
-        this.score = [];
-        this.pending = [];
+        this.penalty = penalty;
+        this.score = Array(this.problems.length).fill(scoreUtils.noSubmission);
+        this.submissionTimes = Array(this.problems.length).fill(0);
+        this.pending = Array(this.problems.length).fill(false);
+        this.attempts = Array(this.problems.length).fill(0);
         this.htmlSubmissions = [];
-        this.problemsSolved = 0;
-        this.allScore = 0;
-        this.pendingCount = 0;
-        for(let _ of problems) {
-            this.score.push(-2);
-            this.pending.push(false);
-        }
+        this.submissionsQueue = [];
+        this.nameId = this.id.replace(`${this.group.id}.`, '');
     }
 
     addSubmission(submission) {
         let index = this.problems.indexOf(submission.problem);
-        if(submission.accepted) {
-            this.score[index] = submission.score;
-        } else {
-            this.score[index] = -1;
-        }
+
+        // This will ignore every submission after the first accepted
+        // Remove this condition if you don't want this feature
+        if(this.score[index] > 0)
+            return;
+        
+        this.attempts[index] += !submission.accepted;
+        
+        this.score[index] = submission.accepted ? submission.score : scoreUtils.wrong;
+        this.submissionTimes[index] = submission.score;
         this.pending[index] = submission.pending;
-        if(!submission.pending && submission.accepted) {
-            this.problemsSolved++;
-            this.allScore += submission.score;
-        } else {
-            this.pendingCount++;
+    
+        if(submission.pending) {
+            let aux = this.submissionsQueue.indexOf(index);
+            if(aux !== -1)
+                this.submissionsQueue.splice(aux, 1);
+            this.submissionsQueue.push(index);
         }
     }
 
     reveal() {
-        if(this.pendingCount == 0) {
+        if(this.submissionsQueue.length === 0)
             return false;
+
+        let index = this.submissionsQueue[0];
+        if(this.subRevealing) {
+            this.pending[index] = false;
+            this.subRevealing = false;
+            this.htmlSubmissions[index].classList.remove('revealing');
+            this.htmlSubmissions[index].classList.remove('pending');
+            this.evaluate(this.htmlSubmissions[index], index);
+            this.submissionsQueue.shift();
         } else {
-            for(let i = 0; i < this.pending.length; i++) {
-                if(this.pending[i]) {
-                    if(this.subRevealing) {
-                        this.pendingCount--;
-                        this.pending[i] = false;
-                        this.subRevealing = false;
-                        this.htmlSubmissions[i].classList.remove('revealing');
-                        this.htmlSubmissions[i].classList.remove('pending');
-                        this.evaluate(this.htmlSubmissions[i], i);
-                    } else {
-                        this.subRevealing = true;
-                        this.htmlSubmissions[i].classList.add('revealing');
-                    }
-                    break;
-                }
-            }
+            this.subRevealing = true;
+            this.htmlSubmissions[index].classList.add('revealing');
         }
         return true;
+    }
+
+    get allScore() {
+        let score = 0;
+        for(let i = 0; i < this.problems.length; i++)
+            if(!this.pending[i] && this.score[i] > 0)
+                score +=  this.score[i] + this.penalty * this.attempts[i];
+        return score;
+    }
+
+    get problemsSolved() {
+        let solved = 0;
+        for(let i = 0; i < this.problems.length; i++)
+            solved += !this.pending[i] && this.score[i] > 0;
+        return solved;
     }
 
     evaluate(data, i) {
         let score = this.score[i];
         if(this.pending[i]) {
             data.classList.add('pending');
-            data.innerHTML = '?';
-        } else if(score == -2) {
+            data.innerHTML = `<p>?</p>\n${new Date(this.submissionTimes[i] * 1000).toISOString().substr(11, 8)} (${this.attempts[i]})</p>`;
+        } else if(score == scoreUtils.noSubmission) {
             data.classList.add('not-submitted');
             data.innerHTML = '-';
-        } else if(score == -1) {
+        } else if(score == scoreUtils.wrong) {
             data.classList.add('wrong');
-            data.innerHTML = '✗';
+            data.innerHTML = `<p>✗</p>\n${new Date(this.submissionTimes[i] * 1000).toISOString().substr(11, 8)} (${this.attempts[i]})</p>`;
         } else {
             data.classList.add('correct');
-            this.allScore += score;
-            this.problemsSolved++;
             this.problemsSolved + '/' + this.problems.length;
             this.htmlScoreData.innerHTML = new Date(this.allScore * 1000).toISOString().substr(11, 8);
             this.htmlProblemData.innerHTML = this.problemsSolved + '/' + this.problems.length;
-            data.innerHTML = '✓';
+            data.innerHTML = `<p>✓</p>\n${new Date(this.submissionTimes[i] * 1000).toISOString().substr(11, 8)} (${this.attempts[i]})</p>`;
         }
     }
 

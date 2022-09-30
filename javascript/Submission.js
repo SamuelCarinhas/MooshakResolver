@@ -1,7 +1,7 @@
 class Submission {
 
     constructor({config, contestants, problemSet, contestData}) {
-        this.contestant = contestants.find(c => c.name == config.getAttribute('Team'));
+        this.contestant = contestants.find(c => c.nameId == config.getAttribute('Team'));
         this.problem = problemSet.find(p => p.name == config.getAttribute('Problem'));
         this.classify = config.getAttribute('Classify');
         this.date = config.getAttribute('Date');
@@ -19,7 +19,7 @@ class Submission {
     }
 
     get score() {
-        return parseInt(this.date);
+        return parseInt(this.date) - parseInt(this.contestData.start);
     }
 
 }

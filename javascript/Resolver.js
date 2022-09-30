@@ -6,6 +6,9 @@ class Resolver {
     }
 
     setup(text) {
+        // Remove garbage from observations
+        text = text.replace(/Observations="([^\"]|\r|\n)*"/g, '');
+
         let parser = new DOMParser();
         let xml = parser.parseFromString(text, 'text/xml');
         let contest = xml.firstChild;
@@ -34,7 +37,8 @@ class Resolver {
                 let contestant = new Contestant({
                     config: team,
                     group: g,
-                    problems: this.problemSet
+                    problems: this.problemSet,
+                    penalty: 20 * 60
                 });
 
                 g.contestants.push(contestant);
@@ -85,7 +89,6 @@ class Resolver {
 
         if(this.stack.length > 0) {
             if(this.reviewing) {
-                console.log('a');
                 this.last.reveal();
                 this.reviewing = false;
                 this.contestants.sort((a, b) => a.compareTo(b));
@@ -121,7 +124,6 @@ class Resolver {
     init() {
         console.log('Resolver started');
 
-        
         fetch(this.content)
             .then(response => response.text())
             .then(text => {
