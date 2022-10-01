@@ -5,12 +5,13 @@ let scoreUtils = {
 
 class Contestant {
 
-    constructor({config, group, problems, penalty}) {
+    constructor({config, group, problems, penalty, rank}) {
         this.id = config.getAttribute('xml:id');
         this.name = config.getAttribute('Name');
         this.group = group;
         this.problems = problems;
         this.penalty = penalty;
+        this.rank = rank;
         this.score = Array(this.problems.length).fill(scoreUtils.noSubmission);
         this.submissionTimes = Array(this.problems.length).fill(0);
         this.pending = Array(this.problems.length).fill(false);
@@ -116,6 +117,11 @@ class Contestant {
 
         if(this.selected)
             row.classList.add('selected');
+        
+        let rank = document.createElement('td');
+        rank.classList.add('name');
+        rank.innerHTML = this.rank;
+        row.appendChild(rank);
         
         let data = document.createElement('td');
         data.classList.add('name');

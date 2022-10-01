@@ -38,7 +38,8 @@ class Resolver {
                     config: team,
                     group: g,
                     problems: this.problemSet,
-                    penalty: 20 * 60
+                    penalty: 20 * 60,
+                    rank: this.contestants.length+1
                 });
 
                 g.contestants.push(contestant);
@@ -59,7 +60,15 @@ class Resolver {
 
         this.contestants.sort((a, b) => a.compareTo(b));
 
+        this.updateContestantsRank();
+
         this.addElements();
+    }
+
+    updateContestantsRank() {
+        let updateRank = 0;
+        for(let contestant of this.contestants)
+            contestant.rank = ++updateRank;
     }
 
     addElements() {
@@ -81,12 +90,14 @@ class Resolver {
 
     updateContestantsOrder() {
         this.contestants.sort((a, b) => a.compareTo(b));
+        this.updateContestantsRank();
         for(let contestant of this.contestants) {
             this.element.removeChild(contestant.htmlElement);
         }
         for(let contestant of this.contestants) {
-            contestant.htmlElement = this.element.appendChild(contestant.htmlElement);
+            contestant.htmlElement = this.element.appendChild(contestant.getElement());
         }
+        this.updateContestantsRank();
     }
 
     reveal() {
