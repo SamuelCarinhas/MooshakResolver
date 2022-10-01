@@ -79,45 +79,38 @@ class Resolver {
         });
     }
 
-    reveal() {
-        if(!this.stack) {
-            this.stack = [];
-            for(let contestant of this.contestants) {
-                this.stack.push(contestant);
-            }
+    updateContestantsOrder() {
+        this.contestants.sort((a, b) => a.compareTo(b));
+        for(let contestant of this.contestants) {
+            this.element.removeChild(contestant.htmlElement);
         }
+        for(let contestant of this.contestants) {
+            contestant.htmlElement = this.element.appendChild(contestant.htmlElement);
+        }
+    }
 
-        if(this.stack.length > 0) {
+    reveal() {
+        this.updateContestantsOrder();
+        let revealContestant = undefined;
+        for(let contestant of this.contestants) {
+            if(contestant.submissionsQueue.length > 0)
+                revealContestant = contestant;
+        }
+        if(revealContestant) {
             if(this.reviewing) {
-                this.last.reveal();
+                revealContestant.reveal();
                 this.reviewing = false;
-                this.contestants.sort((a, b) => a.compareTo(b));
-                for(let contestant of this.contestants) {
-                    this.element.removeChild(contestant.htmlElement);
-                }
-                for(let contestant of this.contestants) {
-                    contestant.htmlElement = this.element.appendChild(contestant.htmlElement);
-                }
-                this.last.select();
-                return;
-            }
-            if(this.last) {
-                this.last.deselect();
-            }
-            let contestant = this.stack.pop();
-            contestant.select();
-    
-            if(contestant.reveal()) {
+            } else {
+                if(this.last)
+                    this.last.deselect();
+                revealContestant.select();
+                revealContestant.reveal();
                 this.reviewing = true;
-                let i = 0;
-                
-                while(i < this.stack.length && this.stack[i].compareTo(contestant) < 0) {
-                    i++;
-                }
-
-                this.stack.splice(i, 0, contestant);
+                this.last = revealContestant;
             }
-            this.last = contestant;
+            this.updateContestantsOrder();
+        } else {
+            this.last.deselect();
         }
     }
 
