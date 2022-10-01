@@ -121,6 +121,9 @@ class Contestant {
         let rank = document.createElement('td');
         rank.classList.add('name');
         rank.innerHTML = this.rank;
+
+        this.rankElement = rank;
+        
         row.appendChild(rank);
         
         let data = document.createElement('td');

@@ -68,7 +68,8 @@ class Resolver {
     updateContestantsRank() {
         let updateRank = 0;
         for(let contestant of this.contestants)
-            contestant.rank = ++updateRank;
+            if(contestant.rankElement)
+                contestant.rankElement.innerHTML = ++updateRank;
     }
 
     addElements() {
@@ -95,7 +96,7 @@ class Resolver {
             this.element.removeChild(contestant.htmlElement);
         }
         for(let contestant of this.contestants) {
-            contestant.htmlElement = this.element.appendChild(contestant.getElement());
+            contestant.htmlElement = this.element.appendChild(contestant.htmlElement);
         }
         this.updateContestantsRank();
     }
