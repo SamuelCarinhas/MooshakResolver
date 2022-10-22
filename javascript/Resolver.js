@@ -58,6 +58,11 @@ class Resolver {
             }));
         }
 
+        this.submissions.sort((a, b) => a.date - b.date);
+        for(let submission of this.submissions) {
+            submission.update();
+        }
+
         this.contestants.sort((a, b) => a.compareTo(b));
 
         this.updateContestantsRank();
@@ -105,22 +110,31 @@ class Resolver {
         this.updateContestantsOrder();
         let revealContestant = undefined;
         for(let contestant of this.contestants) {
-            if(contestant.submissionsQueue.length > 0)
+            if(contestant.submissionsQueue.length > 0 || contestant.final)
                 revealContestant = contestant;
         }
         if(revealContestant) {
-            if(this.reviewing) {
-                revealContestant.reveal();
-                this.reviewing = false;
-            } else {
+            if(revealContestant.submissionsQueue.length == 0 && revealContestant.final) {
                 if(this.last)
                     this.last.deselect();
+                revealContestant.final = false;
                 revealContestant.select();
-                revealContestant.reveal();
-                this.reviewing = true;
                 this.last = revealContestant;
+            } else {
+                if(this.reviewing) {
+                    revealContestant.reveal();
+                    this.reviewing = false;
+                } else {
+                    if(this.last)
+                        this.last.deselect();
+                    revealContestant.select();
+                    revealContestant.reveal();
+                    this.reviewing = true;
+                    this.last = revealContestant;
+                }
             }
             this.updateContestantsOrder();
+            revealContestant.scrollIntoView();    
         } else {
             this.last.deselect();
         }
@@ -134,6 +148,7 @@ class Resolver {
             .then(text => {
                 this.setup(text);
                 this.bindActions();
+                this.updateContestantsOrder();
             });
     }
 

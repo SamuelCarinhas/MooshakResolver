@@ -19,6 +19,7 @@ class Contestant {
         this.htmlSubmissions = [];
         this.submissionsQueue = [];
         this.nameId = this.id.replace(`${this.group.id}.`, '');
+        this.final = true;
     }
 
     addSubmission(submission) {
@@ -97,13 +98,17 @@ class Contestant {
         }
     }
 
-    select() {
-        this.selected = true;
-        this.htmlElement.classList.add('selected');
+    scrollIntoView() {
         this.htmlElement.scrollIntoView({
             behavior: 'smooth',
             block: 'center'
         });
+    }
+
+    select() {
+        this.selected = true;
+        this.htmlElement.classList.add('selected');
+        this.scrollIntoView();
     }
 
     deselect() {

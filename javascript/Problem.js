@@ -1,6 +1,7 @@
 class Problem {
 
     constructor(config) {
+        this.id = config.getAttribute('xml:id');
         this.name = config.getAttribute('Name');
         this.color = config.getAttribute('Color');
     }
